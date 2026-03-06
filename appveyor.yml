@@ -100,7 +100,7 @@ build_script:
         & java -jar ./codacy-test-reporter.jar report `
           -l CSharp `
           -t $env:CODACY_PROJECT_TOKEN `
-          -r "Tests\$env:SOLUTION_NAME.Tests\coverage.opencover.xml"
+          -r "Tests\$env:SOLUTION_NAME.Tests\coverage.opencover.xml" 2>&1 | Write-Output
       }
 
   # --- Sonar: end ---
