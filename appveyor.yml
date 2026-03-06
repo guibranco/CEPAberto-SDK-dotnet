@@ -1,4 +1,4 @@
-version: 4.1.{build}
+version: 4.2.{build}
 skip_tags: true
 image: Visual Studio 2022
 configuration: Release
@@ -86,9 +86,7 @@ build_script:
   - ps: |
       $testProjects = (Get-ChildItem -Path .\Tests\**\ -Recurse -Include *.csproj).FullName
       foreach ($testProject in $testProjects) {
-        dotnet test $testProject `
-          /p:CollectCoverage=true `
-          "/p:CoverletOutputFormat=`"cobertura,opencover,lcov`""
+        dotnet test $testProject /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura%2copencover%2clcov
       }
 
   # --- Coverage reporting (only for safe builds) ---
