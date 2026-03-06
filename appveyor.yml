@@ -17,21 +17,37 @@ dotnet_csproj:
   informational_version: '{version}'
 
 init:
-- SET JAVA_HOME=C:\Program Files\Java\jdk19
-- SET PATH=%JAVA_HOME%\bin;%PATH%
+  - SET JAVA_HOME=C:\Program Files\Java\jdk19
+  - SET PATH=%JAVA_HOME%\bin;%PATH%
 
 before_build:
-- ps: $env:SOLUTION_NAME = $([io.path]::GetFileNameWithoutExtension($(Get-ChildItem -Path .\* -Include *.sln)))
-- ps: $env:SONAR_PROJECT = "$env:APPVEYOR_REPO_NAME" -replace "/","_"
-- ps: $env:SONAR_ORGANIZATION = "$env:APPVEYOR_REPO_NAME" -replace "/.*$",""
-- ps: $env:LOCAL_PR = 0
-- ps: if(-Not $env:APPVEYOR_PULL_REQUEST_NUMBER) { $env:LOCAL_PR = 1 }
-- ps: if($env:APPVEYOR_PULL_REQUEST_HEAD_REPO_NAME -Eq $env:APPVEYOR_REPO_NAME) { $env:LOCAL_PR = 1 }
-- cmd: nuget restore
-- cmd: choco install opencover.portable
-- cmd: choco install codecov
-- cmd: curl -L https://github.com/codacy/codacy-coverage-reporter/releases/latest/download/codacy-coverage-reporter-assembly.jar > ./codacy-test-reporter.jar
-- cmd: dotnet tool install --global dotnet-sonarscanner
+  - ps: $env:SOLUTION_NAME = $([io.path]::GetFileNameWithoutExtension($(Get-ChildItem -Path .\* -Include *.sln)))
+  - ps: $env:SONAR_PROJECT = "$env:APPVEYOR_REPO_NAME" -replace "/","_"
+  - ps: $env:SONAR_ORGANIZATION = "$env:APPVEYOR_REPO_NAME" -replace "/.*$",""
+
+  # LOCAL_PR = 1 means "safe to use secrets" (own-repo PR from a human, or a direct push/commit)
+  # LOCAL_PR = 0 means "do NOT use secrets" (fork PR or bot PR)
+  - ps: $env:LOCAL_PR = 0
+
+  # Direct push / commit (no PR number) → always safe
+  - ps: if (-Not $env:APPVEYOR_PULL_REQUEST_NUMBER) { $env:LOCAL_PR = 1 }
+
+  # PR from the same repo → check whether it was opened by a known bot
+  - ps: |
+      if ($env:APPVEYOR_PULL_REQUEST_HEAD_REPO_NAME -eq $env:APPVEYOR_REPO_NAME -and $env:APPVEYOR_PULL_REQUEST_NUMBER) {
+        $botPatterns = @("dependabot", "renovate", "snyk-bot", "imgbot", "\[bot\]")
+        $author = "$env:APPVEYOR_PULL_REQUEST_HEAD_COMMIT_AUTHOR $env:APPVEYOR_REPO_COMMIT_AUTHOR"
+        $isBot = $botPatterns | Where-Object { $author -match $_ }
+        if (-Not $isBot) {
+          $env:LOCAL_PR = 1
+        }
+      }
+
+  - cmd: nuget restore
+  - cmd: choco install opencover.portable
+  - cmd: choco install codecov
+  - cmd: curl -L https://github.com/codacy/codacy-coverage-reporter/releases/latest/download/codacy-coverage-reporter-assembly.jar > ./codacy-test-reporter.jar
+  - cmd: dotnet tool install --global dotnet-sonarscanner
 
 build:
   publish_nuget: true
@@ -40,66 +56,101 @@ build:
   verbosity: normal
 
 build_script:
-- ps: $Params =  "/k:`"$env:SONAR_PROJECT`"", "/o:`"$env:SONAR_ORGANIZATION`"", "/v:`"$env:APPVEYOR_BUILD_NUMBER`""
-- ps: $Params += "/d:sonar.host.url=`"https://sonarcloud.io`""
-- ps: if($env:LOCAL_PR -Eq 1) { $Params +=  "/d:sonar.token=`"$env:SONAR_TOKEN`"" }
-- ps: $Params += "/d:sonar.exclusions=`"**/bin/**/*,**/obj/**/*`"", "/d:sonar.coverage.exclusions=`"**/$env:SOLUTION_NAME.Tests/**,**/*Tests.cs`""
-- ps: $Params += "/d:sonar.cs.opencover.reportsPaths=`"$env:CD\Tests\$env:SOLUTION_NAME.Tests\coverage.opencover.xml`""
-- ps: if(-Not $env:APPVEYOR_PULL_REQUEST_NUMBER) { $Params += "/d:sonar.branch.name=`"$env:APPVEYOR_REPO_BRANCH`"" }
-- ps: if($env:APPVEYOR_PULL_REQUEST_NUMBER) { $Params += "/d:sonar.pullrequest.key=$env:APPVEYOR_PULL_REQUEST_NUMBER", "/d:sonar.pullrequest.branch=`"$env:APPVEYOR_REPO_BRANCH`"" }
-- ps: Start-process "dotnet" "sonarscanner begin $($Params -join ' ')"
-- dotnet build %SOLUTION_NAME%.sln
-- ps: $TEST_PROJECTS = (Get-ChildItem -Path .\Tests\**\ -Recurse -Include *.csproj).Fullname
-- ps: |
-    foreach($testProject in $TEST_PROJECTS)
-    {
-        dotnet test $testProject /p:CollectCoverage=true "/p:CoverletOutputFormat=\`"cobertura,opencover,lcov\`""
-    }
-- if %LOCAL_PR% EQU 1 codecov -f "Tests\%SOLUTION_NAME%.Tests\coverage.opencover.xml"
-- if %LOCAL_PR% EQU 1 java -jar ./codacy-test-reporter.jar report -l CSharp -t %CODACY_PROJECT_TOKEN% -r "Tests\%SOLUTION_NAME%.Tests\coverage.opencover.xml"
-- if %LOCAL_PR% EQU 1 dotnet sonarscanner end /d:sonar.token="%SONAR_TOKEN%"
+  # --- Sonar: begin ---
+  - ps: |
+      $Params = @(
+        "/k:`"$env:SONAR_PROJECT`"",
+        "/o:`"$env:SONAR_ORGANIZATION`"",
+        "/v:`"$env:APPVEYOR_BUILD_NUMBER`"",
+        "/d:sonar.host.url=`"https://sonarcloud.io`"",
+        "/d:sonar.exclusions=`"**/bin/**/*,**/obj/**/*`"",
+        "/d:sonar.coverage.exclusions=`"**/$env:SOLUTION_NAME.Tests/**,**/*Tests.cs`"",
+        "/d:sonar.cs.opencover.reportsPaths=`"$env:CD\Tests\$env:SOLUTION_NAME.Tests\coverage.opencover.xml`""
+      )
+      if ($env:LOCAL_PR -eq 1) {
+        $Params += "/d:sonar.token=`"$env:SONAR_TOKEN`""
+      }
+      if (-Not $env:APPVEYOR_PULL_REQUEST_NUMBER) {
+        $Params += "/d:sonar.branch.name=`"$env:APPVEYOR_REPO_BRANCH`""
+      }
+      if ($env:APPVEYOR_PULL_REQUEST_NUMBER) {
+        $Params += "/d:sonar.pullrequest.key=$env:APPVEYOR_PULL_REQUEST_NUMBER"
+        $Params += "/d:sonar.pullrequest.branch=`"$env:APPVEYOR_REPO_BRANCH`""
+      }
+      Start-Process "dotnet" "sonarscanner begin $($Params -join ' ')"
+
+  # --- Build ---
+  - ps: dotnet build "$env:SOLUTION_NAME.sln"
+
+  # --- Test + coverage ---
+  - ps: |
+      $testProjects = (Get-ChildItem -Path .\Tests\**\ -Recurse -Include *.csproj).FullName
+      foreach ($testProject in $testProjects) {
+        dotnet test $testProject `
+          /p:CollectCoverage=true `
+          "/p:CoverletOutputFormat=`"cobertura,opencover,lcov`""
+      }
+
+  # --- Coverage reporting (only for safe builds) ---
+  - ps: |
+      if ($env:LOCAL_PR -eq 1) {
+        & codecov -f "Tests\$env:SOLUTION_NAME.Tests\coverage.opencover.xml"
+      }
+
+  - ps: |
+      if ($env:LOCAL_PR -eq 1) {
+        & java -jar ./codacy-test-reporter.jar report `
+          -l CSharp `
+          -t $env:CODACY_PROJECT_TOKEN `
+          -r "Tests\$env:SOLUTION_NAME.Tests\coverage.opencover.xml"
+      }
+
+  # --- Sonar: end ---
+  - ps: |
+      if ($env:LOCAL_PR -eq 1) {
+        & dotnet sonarscanner end /d:sonar.token="$env:SONAR_TOKEN"
+      }
 
 after_build:
-- xcopy Src\%SOLUTION_NAME%\bin\Release\netstandard2.0\*.* Build\netstandard2.0\
-- xcopy Src\%SOLUTION_NAME%\bin\Release\netstandard2.1\*.* Build\netstandard2.1\
+  - ps: xcopy "Src\$env:SOLUTION_NAME\bin\Release\netstandard2.0\*.*" "Build\netstandard2.0\" /Y /I
+  - ps: xcopy "Src\$env:SOLUTION_NAME\bin\Release\netstandard2.1\*.*" "Build\netstandard2.1\" /Y /I
+  - ps: Copy-Item "Src\$env:SOLUTION_NAME\bin\Release\$env:SOLUTION_NAME.$env:APPVEYOR_BUILD_VERSION.nupkg" "$env:SOLUTION_NAME.$env:APPVEYOR_BUILD_VERSION.nupkg"
+  - ps: Remove-Item "Src\$env:SOLUTION_NAME\bin\Release\" -Recurse -Force
 
-- copy Src\%SOLUTION_NAME%\bin\Release\%SOLUTION_NAME%.%APPVEYOR_BUILD_VERSION%.nupkg %SOLUTION_NAME%.%APPVEYOR_BUILD_VERSION%.nupkg
+  - ps: |
+      @("Coverage\Tests", "Coverage\IntegrationTests") | ForEach-Object { New-Item -ItemType Directory -Force -Path $_ | Out-Null }
+      xcopy "Tests\$env:SOLUTION_NAME.Tests\*.xml"              "Coverage\Tests\"            /Y /I
+      xcopy "Tests\$env:SOLUTION_NAME.Tests\*.json"             "Coverage\Tests\"            /Y /I
+      xcopy "Tests\$env:SOLUTION_NAME.Tests\*.info"             "Coverage\Tests\"            /Y /I
+      xcopy "Tests\$env:SOLUTION_NAME.IntegrationTests\*.xml"   "Coverage\IntegrationTests\" /Y /I
+      xcopy "Tests\$env:SOLUTION_NAME.IntegrationTests\*.json"  "Coverage\IntegrationTests\" /Y /I
+      xcopy "Tests\$env:SOLUTION_NAME.IntegrationTests\*.info"  "Coverage\IntegrationTests\" /Y /I
 
-- rd /s /q Src\%SOLUTION_NAME%\bin\Release\
-
-- xcopy Tests\%SOLUTION_NAME%.Tests\*.xml Coverage\Tests\
-- xcopy Tests\%SOLUTION_NAME%.Tests\*.json Coverage\Tests\
-- xcopy Tests\%SOLUTION_NAME%.Tests\*.info Coverage\Tests\
-
-- xcopy Tests\%SOLUTION_NAME%.IntegrationTests\*.xml Coverage\IntegrationTests\
-- xcopy Tests\%SOLUTION_NAME%.IntegrationTests\*.json Coverage\IntegrationTests\
-- xcopy Tests\%SOLUTION_NAME%.IntegrationTests\*.info Coverage\IntegrationTests\
-
-- 7z a -tzip -mx9 "%SOLUTION_NAME%.%APPVEYOR_BUILD_VERSION%.zip" Build
-- 7z a -tzip -mx9 "%SOLUTION_NAME%.%APPVEYOR_BUILD_VERSION%.Coverage.zip" Coverage
+  - ps: 7z a -tzip -mx9 "$env:SOLUTION_NAME.$env:APPVEYOR_BUILD_VERSION.zip" Build
+  - ps: 7z a -tzip -mx9 "$env:SOLUTION_NAME.$env:APPVEYOR_BUILD_VERSION.Coverage.zip" Coverage
 
 artifacts:
-- path: $(SOLUTION_NAME).%APPVEYOR_BUILD_VERSION%.nupkg
-  name: Package
+  - path: $(SOLUTION_NAME).$(APPVEYOR_BUILD_VERSION).nupkg
+    name: Package
 
-- path: $(SOLUTION_NAME).%APPVEYOR_BUILD_VERSION%.zip
-  name: ZipFile
+  - path: $(SOLUTION_NAME).$(APPVEYOR_BUILD_VERSION).zip
+    name: ZipFile
 
-- path: $(SOLUTION_NAME).%APPVEYOR_BUILD_VERSION%.Coverage.zip
-  name: Coverage
+  - path: $(SOLUTION_NAME).$(APPVEYOR_BUILD_VERSION).Coverage.zip
+    name: Coverage
 
 deploy:
-- provider: NuGet
-  api_key: $(NUGET_TOKEN)
-  skip_symbols: false
-  on:
-   branch: main
-  
-- provider: GitHub
-  on:
-   branch: main
-  tag: v$(appveyor_build_version)
-  description: Release of $(SOLUTION_NAME) - v$(appveyor_build_version)
-  auth_token: $(GITHUB_TOKEN)
-  force_update: true
-  artifact: ZipFile, Package, Coverage
+  - provider: NuGet
+    api_key: $(NUGET_TOKEN)
+    skip_symbols: false
+    on:
+      branch: main
+
+  - provider: GitHub
+    on:
+      branch: main
+    tag: v$(appveyor_build_version)
+    description: Release of $(SOLUTION_NAME) - v$(appveyor_build_version)
+    auth_token: $(GITHUB_TOKEN)
+    force_update: true
+    artifact: ZipFile, Package, Coverage
