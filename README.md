@@ -5,40 +5,40 @@
 Implements all V3 features
 
 
-[![GitHub license](https://img.shields.io/github/license/guibranco/CEPAberto)](https://github.com/guibranco/CEPAberto)
-[![time tracker](https://wakatime.com/badge/github/guibranco/CEPAberto.svg)](https://wakatime.com/badge/github/guibranco/CEPAberto)
-[![DeepSource](https://deepsource.io/gh/guibranco/CEPAberto.svg/?label=active)](https://deepsource.io/gh/guibranco/CEPAberto/?ref=repository-badge)
+[![GitHub license](https://img.shields.io/github/license/guibranco/CEPAberto-SDK-dotnet)](https://github.com/guibranco/CEPAberto-SDK-dotnet)
+[![time tracker](https://wakatime.com/badge/github/guibranco/CEPAberto-SDK-dotnet.svg)](https://wakatime.com/badge/github/guibranco/CEPAberto-SDK-dotnet)
+[![DeepSource](https://app.deepsource.com/gh/guibranco/CEPAberto-SDK-dotnet.svg/?label=code+coverage&show_trend=true&token=g5D41iqUQf-EPfLYw6YlIH1E)](https://app.deepsource.com/gh/guibranco/CEPAberto-SDK-dotnet/)
 
-![CEPAberto](https://raw.githubusercontent.com/guibranco/CEPAberto/main/logo.png)
+![CEPAberto](https://raw.githubusercontent.com/guibranco/CEPAberto-SDK-dotnet/main/logo.png)
 
 ## CI/CD
 
 | Build status | Last commit | Tests | Coverage | Code Smells | LOC |
 |--------------|-------------|-------|----------|-------------|-----|
-| [![Build status](https://ci.appveyor.com/api/projects/status/l9cuqk1s1gdppqpn/branch/main?svg=true)](https://ci.appveyor.com/project/guibranco/CEPAberto) | [![GitHub last commit](https://img.shields.io/github/last-commit/guibranco/CEPAberto/main)](https://github.com/guibranco/CEPAberto) | [![AppVeyor tests (branch)](https://img.shields.io/appveyor/tests/guibranco/CEPAberto/main?compact_message)](https://ci.appveyor.com/project/guibranco/CEPAberto) | [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=guibranco_CEPAberto&metric=coverage)](https://sonarcloud.io/dashboard?id=guibranco_CEPAberto) | [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=guibranco_CEPAberto&metric=code_smells)](https://sonarcloud.io/dashboard?id=guibranco_CEPAberto) | [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=guibranco_CEPAberto&metric=ncloc)](https://sonarcloud.io/dashboard?id=guibranco_CEPAberto)
+| [![Build status](https://ci.appveyor.com/api/projects/status/l9cuqk1s1gdppqpn/branch/main?svg=true)](https://ci.appveyor.com/project/guibranco/CEPAberto-SDK-dotnet) | [![GitHub last commit](https://img.shields.io/github/last-commit/guibranco/CEPAberto-SDK-dotnet/main)](https://github.com/guibranco/CEPAberto-SDK-dotnet) | [![AppVeyor tests (branch)](https://img.shields.io/appveyor/tests/guibranco/CEPAberto-SDK-dotnet/main?compact_message)](https://ci.appveyor.com/project/guibranco/CEPAberto-SDK-dotnet) | [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=guibranco_CEPAberto-SDK-dotnet&metric=coverage)](https://sonarcloud.io/dashboard?id=guibranco_CEPAberto-SDK-dotnet) | [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=guibranco_CEPAberto-SDK-dotnet&metric=code_smells)](https://sonarcloud.io/dashboard?id=guibranco_CEPAberto-SDK-dotnet) | [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=guibranco_CEPAberto-SDK-dotnet&metric=ncloc)](https://sonarcloud.io/dashboard?id=guibranco_CEPAberto-SDK-dotnet)
 
 ## Code Quality
 
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/e9fd678b9bfe4d729e8970ed3fb506d9)](https://www.codacy.com/gh/guibranco/CEPAberto/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=guibranco/CEPAberto&amp;utm_campaign=Badge_Grade)
-[![Codacy Badge](https://app.codacy.com/project/badge/Coverage/e9fd678b9bfe4d729e8970ed3fb506d9)](https://www.codacy.com/gh/guibranco/CEPAberto/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=guibranco/CEPAberto&amp;utm_campaign=Badge_Grade)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/e9fd678b9bfe4d729e8970ed3fb506d9)](https://www.codacy.com/gh/guibranco/CEPAberto-SDK-dotnet/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=guibranco/CEPAberto-SDK-dotnet&amp;utm_campaign=Badge_Grade)
+[![Codacy Badge](https://app.codacy.com/project/badge/Coverage/e9fd678b9bfe4d729e8970ed3fb506d9)](https://www.codacy.com/gh/guibranco/CEPAberto-SDK-dotnet/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=guibranco/CEPAberto-SDK-dotnet&amp;utm_campaign=Badge_Grade)
 
-[![codecov](https://codecov.io/gh/guibranco/CEPAberto/branch/main/graph/badge.svg)](https://codecov.io/gh/guibranco/CEPAberto)
-[![CodeFactor](https://www.codefactor.io/repository/github/guibranco/CEPAberto/badge)](https://www.codefactor.io/repository/github/guibranco/CEPAberto)
+[![codecov](https://codecov.io/gh/guibranco/CEPAberto-SDK-dotnet/branch/main/graph/badge.svg)](https://codecov.io/gh/guibranco/CEPAberto-SDK-dotnet)
+[![CodeFactor](https://www.codefactor.io/repository/github/guibranco/CEPAberto-SDK-dotnet/badge)](https://www.codefactor.io/repository/github/guibranco/CEPAberto-SDK-dotnet)
 
-[![Maintainability](https://api.codeclimate.com/v1/badges/f12c9899307a319a1cc4/maintainability)](https://codeclimate.com/github/guibranco/CEPAberto/maintainability)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/f12c9899307a319a1cc4/test_coverage)](https://codeclimate.com/github/guibranco/CEPAberto/test_coverage)
+[![Maintainability](https://api.codeclimate.com/v1/badges/f12c9899307a319a1cc4/maintainability)](https://codeclimate.com/github/guibranco/CEPAberto-SDK-dotnet/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/f12c9899307a319a1cc4/test_coverage)](https://codeclimate.com/github/guibranco/CEPAberto-SDK-dotnet/test_coverage)
 
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=guibranco_CEPAberto&metric=alert_status)](https://sonarcloud.io/dashboard?id=guibranco_CEPAberto)
-[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=guibranco_CEPAberto&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=guibranco_CEPAberto)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=guibranco_CEPAberto-SDK-dotnet&metric=alert_status)](https://sonarcloud.io/dashboard?id=guibranco_CEPAberto-SDK-dotnet)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=guibranco_CEPAberto-SDK-dotnet&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=guibranco_CEPAberto-SDK-dotnet)
 
-[![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=guibranco_CEPAberto&metric=sqale_index)](https://sonarcloud.io/dashboard?id=guibranco_CEPAberto)
-[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=guibranco_CEPAberto&metric=duplicated_lines_density)](https://sonarcloud.io/dashboard?id=guibranco_CEPAberto)
+[![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=guibranco_CEPAberto-SDK-dotnet&metric=sqale_index)](https://sonarcloud.io/dashboard?id=guibranco_CEPAberto-SDK-dotnet)
+[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=guibranco_CEPAberto-SDK-dotnet&metric=duplicated_lines_density)](https://sonarcloud.io/dashboard?id=guibranco_CEPAberto-SDK-dotnet)
 
-[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=guibranco_CEPAberto&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=guibranco_CEPAberto)
-[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=guibranco_CEPAberto&metric=security_rating)](https://sonarcloud.io/dashboard?id=guibranco_CEPAberto)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=guibranco_CEPAberto-SDK-dotnet&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=guibranco_CEPAberto-SDK-dotnet)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=guibranco_CEPAberto-SDK-dotnet&metric=security_rating)](https://sonarcloud.io/dashboard?id=guibranco_CEPAberto-SDK-dotnet)
 
-[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=guibranco_CEPAberto&metric=bugs)](https://sonarcloud.io/dashboard?id=guibranco_CEPAberto)
-[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=guibranco_CEPAberto&metric=vulnerabilities)](https://sonarcloud.io/dashboard?id=guibranco_CEPAberto)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=guibranco_CEPAberto-SDK-dotnet&metric=bugs)](https://sonarcloud.io/dashboard?id=guibranco_CEPAberto-SDK-dotnet)
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=guibranco_CEPAberto-SDK-dotnet&metric=vulnerabilities)](https://sonarcloud.io/dashboard?id=guibranco_CEPAberto-SDK-dotnet)
 
 ---
 
@@ -46,9 +46,9 @@ Implements all V3 features
 
 ### Github Releases
 
-[![GitHub last release](https://img.shields.io/github/release-date/guibranco/CEPAberto.svg?style=flat)](https://github.com/guibranco/CEPAberto) [![Github All Releases](https://img.shields.io/github/downloads/guibranco/CEPAberto/total.svg?style=flat)](https://github.com/guibranco/CEPAberto)
+[![GitHub last release](https://img.shields.io/github/release-date/guibranco/CEPAberto-SDK-dotnet.svg?style=flat)](https://github.com/guibranco/CEPAberto-SDK-dotnet) [![Github All Releases](https://img.shields.io/github/downloads/guibranco/CEPAberto-SDK-dotnet/total.svg?style=flat)](https://github.com/guibranco/CEPAberto-SDK-dotnet)
 
-Download the latest zip file from the [Release](https://github.com/GuiBranco/CEPAberto/releases) page.
+Download the latest zip file from the [Release](https://github.com/guibranco/CEPAberto-SDK-dotnet/releases) page.
 
 ### Nuget package manager
 
